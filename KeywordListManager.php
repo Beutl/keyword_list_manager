@@ -70,7 +70,10 @@ class KeywordListManager
 		foreach ($wordsToRemoveFromPhrase as $wordsToRemoveFromPhraseItem) {
 			$isPrinted = false;
 			foreach ($toRemovePhrase as $toRemovePhraseItem) {
-				if (empty($wordsToRemoveFromPhraseItem) || strpos($wordsToRemoveFromPhraseItem, $toRemovePhraseItem) === 0) {
+				$wordsToRemoveFromPhraseItemRegex = '/\b'.$wordsToRemoveFromPhraseItem.'\b/';
+				preg_match(strtolower($wordsToRemoveFromPhraseItemRegex), strtolower($toRemovePhraseItem), $match, PREG_OFFSET_CAPTURE);
+				if (isset($match[0])) {
+					//var_dump($match);
 					break;
 				}
 				if (!$isPrinted) {
