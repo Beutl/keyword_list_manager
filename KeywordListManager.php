@@ -73,11 +73,13 @@ class KeywordListManager
 			}
 
 			$isPrinted = false;
+			$found = false;
 			foreach ($toRemovePhrase as $toRemovePhraseItem) {
 				$toRemovePhraseItem = '/\b'.$toRemovePhraseItem.'\b/';
 				preg_match(strtolower($toRemovePhraseItem), strtolower($wordsToRemoveFromPhraseItem), $match, PREG_OFFSET_CAPTURE);
 				//var_dump($match);
 				if (isset($match[0])) {
+					$found = true;
 					break;
 				}
 
@@ -87,9 +89,12 @@ class KeywordListManager
 				}
 				*/
 
-				if (!$isPrinted) {
+				//$newString .= $wordsToRemoveFromPhraseItem . "\n";
+				//$isPrinted = true;
+			}
+			if (!$found) {
+				if (!empty($wordsToRemoveFromPhraseItem)) {
 					$newString .= $wordsToRemoveFromPhraseItem . "\n";
-					$isPrinted = true;
 				}
 			}
 		}
