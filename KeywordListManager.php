@@ -68,14 +68,25 @@ class KeywordListManager
 	{
 		$newString = "";
 		foreach ($wordsToRemoveFromPhrase as $wordsToRemoveFromPhraseItem) {
+			if (in_array($wordsToRemoveFromPhraseItem, $toRemovePhrase)) {
+				continue;
+			}
+
 			$isPrinted = false;
 			foreach ($toRemovePhrase as $toRemovePhraseItem) {
-				$wordsToRemoveFromPhraseItemRegex = '/\b'.$wordsToRemoveFromPhraseItem.'\b/';
-				preg_match(strtolower($wordsToRemoveFromPhraseItemRegex), strtolower($toRemovePhraseItem), $match, PREG_OFFSET_CAPTURE);
+				$toRemovePhraseItem = '/\b'.$toRemovePhraseItem.'\b/';
+				preg_match(strtolower($toRemovePhraseItem), strtolower($wordsToRemoveFromPhraseItem), $match, PREG_OFFSET_CAPTURE);
+				//var_dump($match);
 				if (isset($match[0])) {
-					//var_dump($match);
 					break;
 				}
+
+				/*
+				if (empty($wordsToRemoveFromPhraseItem) || strpos($wordsToRemoveFromPhraseItem, $toRemovePhraseItem) === 0) {
+					break;
+				}
+				*/
+
 				if (!$isPrinted) {
 					$newString .= $wordsToRemoveFromPhraseItem . "\n";
 					$isPrinted = true;
