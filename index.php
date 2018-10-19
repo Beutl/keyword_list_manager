@@ -36,6 +36,55 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-md-10">
+					<div class="accordion" id="accordionExample">
+						<div class="card">
+							<div class="card-header" id="headingOne">
+								<h5 class="mb-0">
+									<button class="btn btn-link" type="button" data-toggle="collapse"
+											data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+										Click HERE to Show Example
+									</button>
+								</h5>
+							</div>
+
+							<div id="collapseOne" class="collapse" aria-labelledby="headingOne"
+								 data-parent="#accordionExample">
+								<div class="card-body">
+									<p>
+
+									</p>
+									<div>
+										<em><strong>List #1:</strong></em> <span>To use for cleaning list #2</span>
+									</div>
+									<code>xxx yyy</code><br>
+									<code>aaa bbb</code><br>
+									<code>zzz</code>
+									<div>
+										<div>
+											<strong><em>List #2:</em></strong> <span>The "Main" List we Use and Clean Up with List #1</span>
+										</div>
+										<code>aaa bbb ccc</code><br>
+										<code>xxx</code><br>
+										<code>zzz yyy</code><br>
+										<code>ddd eee</code><br>
+										<div>
+											<em><strong>Output</strong></em> <span>After Top List (#1) Removed From Bottom List (#2)</span>
+										</div>
+										<code>xxx</code><br>
+										<code>ddd eee</code><br>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="p-1">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-10">
 					<p class="lead">List #1</p>
 					<div class="form-group">
               <textarea class="form-control form-control-sm" id="toRemove" rows="10">
