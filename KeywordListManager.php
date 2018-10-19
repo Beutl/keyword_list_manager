@@ -63,6 +63,43 @@ class KeywordListManager
 
 		return $newString;
 	}
+
+	public static function doPhraseCheck($toRemovePhrase, $wordsToRemoveFromPhrase)
+	{
+		$newString = "";
+		foreach ($wordsToRemoveFromPhrase as $wordsToRemoveFromPhraseItem) {
+			$isPrinted = false;
+			foreach ($toRemovePhrase as $toRemovePhraseItem) {
+				if (empty($wordsToRemoveFromPhraseItem) || strpos($wordsToRemoveFromPhraseItem, $toRemovePhraseItem) === 0) {
+					break;
+				}
+				if (!$isPrinted) {
+					$newString .= $wordsToRemoveFromPhraseItem . "\n";
+					$isPrinted = true;
+				}
+			}
+		}
+
+		return $newString;
+	}    //doPhraseCheck
+
+	public static function doRemoveLine($toRemoveItems, $wordsToRemoveFrom)
+	{
+		$newString = "";
+		foreach ($wordsToRemoveFrom as $wordsToRemoveFromItem) {
+			$toRemove = explode(' ', trim($wordsToRemoveFromItem));
+			if (count($toRemove) > 0 && in_array($toRemove[0], $toRemoveItems)) {
+				continue;
+			}
+
+			if (strpos($toRemoveItems, $wordsToRemoveFromItem)) {
+				continue;
+			}
+			$newString .= $wordsToRemoveFromItem . "\n";
+		}
+
+		return $newString;
+	}
 }    //KeywordListManager
 
 //KeywordListManager::doRemoveLines();
@@ -71,16 +108,9 @@ if (isset($_POST['toRemove'])) {
 	$toRemoveItems = $_POST['toRemove'];
 	$toRemoveItems = str_replace("\n", '<br />', $toRemoveItems);
 	$toRemoveItemsArr = explode('<br />', $toRemoveItems);
-	//var_dump($toRemoveItemsArr);
 
 	$removeFromItems = $_POST['removeFrom'];
 	$removeFromItems = str_replace("\n", '<br />', $removeFromItems);
 	$removeFromItemsArr = explode('<br />', $removeFromItems);
-	//var_dump($removeFromItemsArr);
-	/*
-	$removeFrom = $_POST['removeFrom'];
-	$removeFrom = str_replace("\n", '<br />', $toRemoveItems);
-	echo json_encode(KeywordListManager::doRemoveLines_v2($toRemoveItemsArr, $toRemoveFromArray));
-	*/
-	echo json_encode(KeywordListManager::doRemoveLines_v2($toRemoveItemsArr, $removeFromItemsArr));
+	echo json_encode(KeywordListManager::doPhraseCheck($toRemoveItemsArr, $removeFromItemsArr));
 }

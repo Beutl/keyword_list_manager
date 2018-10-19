@@ -88,7 +88,7 @@
     $(document).ready(function () {
         $("#removeFromListBtn").click(function () {
             $.ajax({
-                url: "KeyWordListManager.php", //the page containing php script
+                url: "KeywordListManager.php", //the page containing php script
                 type: "post", //request type,
                 dataType: 'json',
                 data: {toRemove: $('#toRemove').val(), removeFrom: $('#removeFrom').val()},
