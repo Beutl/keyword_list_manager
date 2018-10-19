@@ -48,54 +48,39 @@ class KeywordListManager
 			fwrite($convertedFile, $wordsToRemoveFromItem);
 		}
 		fclose($convertedFile);
+	}
 
-
-		/*
-		if (is_dir($execDirectory)) {
-			if ($dh = opendir($execDirectory)) {
-				while (($execFile = readdir($dh)) !== false) {
-					$fileType = substr(strrchr($execDirectory . "/" . $execFile, "."), 1);
-					if ($fileType === "txt") {
-						$lines = file($execDirectory . "/" . $execFile, FILE_IGNORE_NEW_LINES);
-						$file = fopen("translated_csv/" . str_replace($fileType, 'csv', $execFile),"w");
-						foreach ($lines as $line) {
-							try {
-								echo 'Word: ' . $line;
-								$ch = curl_init("https://cxl-services.appspot.com/proxy?url=https://translation.googleapis.com/language/translate/v2/detect?" . http_build_query(array('q'=>$line)));
-								if ($ch === false) {
-									throw new Exception('failed to initialize');
-								}
-
-								curl_setopt($ch, CURLOPT_HEADER, 0);
-								curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-								$output = curl_exec($ch);
-								// Check the return value of curl_exec(), too
-								if ($output === false) {
-									throw new Exception(curl_error($ch), curl_errno($ch));
-								}
-
-								curl_close($ch);
-								$decoded = json_decode($output, true);
-
-								$language = $decoded['data']['detections'][0][0]['language'];
-
-								echo '	Language: ' . $language . '<br>';
-
-								$lineToWrite = $line . ',' . $language;
-								fputcsv($file,explode(',',$lineToWrite));
-
-							} catch (Exception $e) {
-								echo 'Exception: ' . $e->getMessage();
-							}
-						}
-						fclose($file);
-					}
-				}
+	public static function doRemoveLines_v2($toRemoveItems, $wordsToRemoveFrom)
+	{
+		$newString = "";
+		foreach ($wordsToRemoveFrom as $wordsToRemoveFromItem) {
+			$toRemove = explode(' ', trim($wordsToRemoveFromItem));
+			if (count($toRemove) > 0 && in_array($toRemove[0], $toRemoveItems)) {
+				continue;
 			}
-			closedir($dh);
+			$newString .= $wordsToRemoveFromItem . "\n";
 		}
-		*/
+
+		return $newString;
 	}
 }    //KeywordListManager
 
-KeywordListManager::doRemoveLines();
+//KeywordListManager::doRemoveLines();
+
+if (isset($_POST['toRemove'])) {
+	$toRemoveItems = $_POST['toRemove'];
+	$toRemoveItems = str_replace("\n", '<br />', $toRemoveItems);
+	$toRemoveItemsArr = explode('<br />', $toRemoveItems);
+	//var_dump($toRemoveItemsArr);
+
+	$removeFromItems = $_POST['removeFrom'];
+	$removeFromItems = str_replace("\n", '<br />', $removeFromItems);
+	$removeFromItemsArr = explode('<br />', $removeFromItems);
+	//var_dump($removeFromItemsArr);
+	/*
+	$removeFrom = $_POST['removeFrom'];
+	$removeFrom = str_replace("\n", '<br />', $toRemoveItems);
+	echo json_encode(KeywordListManager::doRemoveLines_v2($toRemoveItemsArr, $toRemoveFromArray));
+	*/
+	echo json_encode(KeywordListManager::doRemoveLines_v2($toRemoveItemsArr, $removeFromItemsArr));
+}
