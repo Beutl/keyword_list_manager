@@ -64,33 +64,6 @@ class KeywordListManager
 		return $newString;
 	}
 
-	public static function doPhraseCheck($toRemovePhrase, $wordsToRemoveFromPhrase)
-	{
-		$newString = "";
-		foreach ($wordsToRemoveFromPhrase as $wordsToRemoveFromPhraseItem) {
-			if (in_array($wordsToRemoveFromPhraseItem, $toRemovePhrase)) {
-				continue;
-			}
-
-			$found = false;
-			foreach ($toRemovePhrase as $toRemovePhraseItem) {
-				$toRemovePhraseItem = '/\b'.$toRemovePhraseItem.'\b/';
-				preg_match(strtolower($toRemovePhraseItem), strtolower($wordsToRemoveFromPhraseItem), $match, PREG_OFFSET_CAPTURE);
-				if (isset($match[0])) {
-					$found = true;
-					break;
-				}
-			}
-			if (!$found) {
-				if (!empty($wordsToRemoveFromPhraseItem)) {
-					$newString .= $wordsToRemoveFromPhraseItem . "\n";
-				}
-			}
-		}
-
-		return $newString;
-	}    //doPhraseCheck
-
 	public static function doRemoveLine($toRemoveItems, $wordsToRemoveFrom)
 	{
 		$newString = "";
@@ -108,6 +81,78 @@ class KeywordListManager
 
 		return $newString;
 	}
+
+	public static function doPhraseCheck($toRemovePhrase, $wordsToRemoveFromPhrase, $chkOne = false, $chkTwo = false, $chkThree = false)
+	{
+		$newString = "";
+		foreach ($wordsToRemoveFromPhrase as $wordsToRemoveFromPhraseItem) {
+			/*
+			if (in_array($wordsToRemoveFromPhraseItem, $toRemovePhrase)) {
+				continue;
+			}
+			*/
+
+			//will remove starting words that match
+			//aaa
+			//aaa bbb
+			//will remove aaa bbb
+			$found = false;
+			foreach ($toRemovePhrase as $toRemovePhraseItem) {
+				if ($chkOne === 'true' ||
+					$chkTwo === 'true' ||
+					$chkThree === 'true') {
+					if ($chkOne === 'true') {
+						//check whole line
+						//echo 'check 1!'  . '<br>';
+						//echo '$wordsToRemoveFromPhraseItem: ' . $wordsToRemoveFromPhraseItem . '<br>';
+						//echo '$toRemovePhraseItem: ' . $toRemovePhraseItem . '<br>';
+						if (strcmp($wordsToRemoveFromPhraseItem, $toRemovePhraseItem) == 0) {
+							//echo 'found!'  . '<br>';
+							$found = true;
+							break;
+						}
+					}
+
+					if ($chkTwo === 'true') {
+						//echo 'check 2!'  . '<br>';
+						//echo '$wordsToRemoveFromPhraseItem: ' . $wordsToRemoveFromPhraseItem . '<br>';
+						//echo '$toRemovePhraseItem: ' . $toRemovePhraseItem . '<br>';
+						if (strpos($wordsToRemoveFromPhraseItem, $toRemovePhraseItem) !== false) {
+							//echo 'found! '  . strpos($wordsToRemoveFromPhraseItem, $toRemovePhraseItem) . '<br>';
+							$found = true;
+							break;
+						}
+					}
+
+					if ($chkThree === 'true') {
+						//echo 'check 3!'  . '<br>';
+						//echo '$wordsToRemoveFromPhraseItem: ' . $wordsToRemoveFromPhraseItem . '<br>';
+						//echo '$toRemovePhraseItem: ' . $toRemovePhraseItem . '<br>';
+						if (strpos($wordsToRemoveFromPhraseItem, $toRemovePhraseItem) !== false) {
+							//echo 'found! '  . strpos($wordsToRemoveFromPhraseItem, $toRemovePhraseItem) . '<br>';
+							$found = true;
+							break;
+						}
+					}
+				} else {
+					$toRemovePhraseItem = '/\b'.$toRemovePhraseItem.'\b/';
+					preg_match(strtolower($toRemovePhraseItem), strtolower($wordsToRemoveFromPhraseItem), $match, PREG_OFFSET_CAPTURE);
+					if (isset($match[0])) {
+						$found = true;
+						break;
+					}
+				}
+			}
+			if (!$found) {
+				if (!empty($wordsToRemoveFromPhraseItem)) {
+					$newString .= $wordsToRemoveFromPhraseItem . "\n";
+				}
+			}
+		}
+
+		return $newString;
+	}    //doPhraseCheck
+
 }    //KeywordListManager
 
 //KeywordListManager::doRemoveLines();
@@ -120,5 +165,5 @@ if (isset($_POST['toRemove'])) {
 	$removeFromItems = $_POST['removeFrom'];
 	$removeFromItems = str_replace("\n", '<br />', $removeFromItems);
 	$removeFromItemsArr = explode('<br />', $removeFromItems);
-	echo json_encode(KeywordListManager::doPhraseCheck($toRemoveItemsArr, $removeFromItemsArr));
+	echo json_encode(KeywordListManager::doPhraseCheck($toRemoveItemsArr, $removeFromItemsArr, $_POST['chkOne'], $_POST['chkTwo'], $_POST['chkThree']));
 }

@@ -85,6 +85,27 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-md-10">
+					<div class="checkbox">
+						<label><input id="chkOne" type="checkbox" value="1"> Remove only if full line matches, for
+							example "aha one" will only be removed if "aha one" is in the list 1 but will not be removed
+							if only "aha" is in list 1</label>
+					</div>
+					<div class="checkbox">
+						<label><input id="chkTwo" type="checkbox" value="2"> Remove also if words are contained in other
+							words, such as "aha" is in "ahaa" so "ahaa" will also be removed</label>
+					</div>
+					<div class="checkbox">
+						<label><input id="chkThree" type="checkbox" value="3"> First letter case, uppercase and
+							lowercase sensitive</label>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="p-1">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-10">
 					<p class="lead">List #1</p>
 					<div class="form-group">
               <textarea class="form-control form-control-sm" id="toRemove" rows="10">
@@ -136,11 +157,20 @@
 <script>
     $(document).ready(function () {
         $("#removeFromListBtn").click(function () {
+            //get checkboxes
+            var model = {
+                chkOne: $('#chkOne').prop('checked'),
+            	chkTwo: $('#chkTwo').prop('checked'),
+                chkThree: $('#chkThree').prop('checked'),
+                toRemove: $('#toRemove').val(),
+				removeFrom: $('#removeFrom').val()
+            };
+
             $.ajax({
                 url: "KeywordListManager.php", //the page containing php script
                 type: "post", //request type,
                 dataType: 'json',
-                data: {toRemove: $('#toRemove').val(), removeFrom: $('#removeFrom').val()},
+                data: model,
                 success: function (result) {
                     $('#removeFrom').val(result);
                 }
